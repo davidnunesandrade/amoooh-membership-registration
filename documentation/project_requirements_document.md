@@ -1,117 +1,94 @@
-# Project Requirements Document: codeguide-starter
-
----
+# Project Requirements Document (PRD)
 
 ## 1. Project Overview
+The AMOOH Membership and Company Registration Platform is a full-stack web application designed to manage memberships, media channels, agencies, and advertisers in one unified dashboard. At its core, it provides a secure sign-up/sign-in flow, personalized member profiles, and CRUD (Create, Read, Update, Delete) operations for Display Mediums, Agencies, and Advertisers. By leveraging a modern tech stack, it aims to simplify administrative workflows and offer a responsive, accessible user experience.
 
-The **codeguide-starter** project is a boilerplate web application that provides a ready-made foundation for any web project requiring secure user authentication and a post-login dashboard. It sets up the common building blocks—sign-up and sign-in pages, API routes to handle registration and login, and a simple dashboard interface driven by static data. By delivering this skeleton, it accelerates development time and ensures best practices are in place from day one.
-
-This starter kit is being built to solve the friction developers face when setting up repeated common tasks: credential handling, session management, page routing, and theming. Key objectives include: 1) delivering a fully working authentication flow (registration & login), 2) providing a gated dashboard area upon successful login, 3) establishing a clear, maintainable project structure using Next.js and TypeScript, and 4) demonstrating a clean theming approach with global and section-specific CSS. Success is measured by having an end-to-end login journey in under 200 lines of code and zero runtime type errors.
-
----
+This platform is being built to replace fragmented spreadsheets and manual processes with an integrated system that tracks members’ company affiliations, their roles, and their associated media channels. The key objectives are:
+• Enable secure user authentication and role-based access.  
+• Provide a clear, intuitive dashboard for managing members, media, agencies, and advertisers.  
+• Ensure data integrity and type safety with a robust database layer.  
+• Deliver fast page loads and API responses to boost user satisfaction.
 
 ## 2. In-Scope vs. Out-of-Scope
 
-### In-Scope (Version 1)
-- User registration (sign-up) form with validation
-- User login (sign-in) form with validation
-- Next.js API routes under `/api/auth/route.ts` handling:
-  - Credential validation
-  - Password hashing (e.g., bcrypt)
-  - Session creation or JWT issuance
-- Protected dashboard pages under `/dashboard`:
-  - `layout.tsx` wrapping dashboard content
-  - `page.tsx` rendering static data from `data.json`
-- Global application layout in `/app/layout.tsx`
-- Basic styling via `globals.css` and `dashboard/theme.css`
-- TypeScript strict mode enabled
+### In-Scope (v1)
+• User Authentication: Sign-up, sign-in, session management with JWT tokens.  
+• Member Dashboard: Personalized landing page after login.  
+• Member Profile CRUD: View and update personal and company details.  
+• Display Mediums CRUD: Add, list, edit, delete media channels.  
+• Agencies CRUD: Manage agency records linked to members.  
+• Advertisers CRUD: Manage advertiser records under agencies.  
+• Member–Media Association: Multi-select component to link a member to multiple mediums.  
+• RESTful API Endpoints: `/api/members`, `/api/media`, `/api/agencies`, `/api/advertisers`.  
+• PostgreSQL Database: Tables for Members, Media, Agencies, Advertisers, and join table MemberMedia.  
+• Responsive UI: Accessible forms and lists styled with Tailwind CSS.  
+• Type Safety: End-to-end typing with TypeScript and Drizzle ORM.  
+• Containerization: Docker configuration for local development.
 
-### Out-of-Scope (Later Phases)
-- Integration with a real database (PostgreSQL, MongoDB, etc.)
-- Advanced authentication flows (password reset, email verification, MFA)
-- Role-based access control (RBAC)
-- Multi-tenant or white-label theming
-- Unit, integration, or end-to-end testing suites
-- CI/CD pipeline and production deployment scripts
-
----
+### Out-of-Scope (v1)
+• Advanced Reporting & Analytics dashboards with charting libraries.  
+• Progressive Web App (PWA) offline support.  
+• Role-based permissions beyond basic member vs. admin.  
+• Payment or subscription billing integration.  
+• Third-party OAuth (Google, Facebook) or SSO.  
+• Internationalization (i18n) and multi-language support.  
+• Performance tuning beyond standard caching (e.g., Redis).
 
 ## 3. User Flow
+When a new user arrives, they land on the home page with options to sign up or sign in. Clicking **Sign Up** leads to a form collecting name, email, password, and company information. On successful registration, the user receives a JWT token, is logged in automatically, and is redirected to the Dashboard.
 
-A new visitor lands on the root URL and sees a welcome page with options to **Sign Up** or **Sign In**. If they choose Sign Up, they fill in their email, password, and hit “Create Account.” The form submits to `/api/auth/route.ts`, which hashes the password, creates a new user session or token, and redirects them to the dashboard. If any input is invalid, an inline error message explains the issue (e.g., “Password too short”).
-
-Once authenticated, the user is taken to the `/dashboard` route. Here they see a sidebar or header defined by `dashboard/layout.tsx`, and the main panel pulls in static data from `data.json`. They can log out (if that control is present), but otherwise their entire session is managed by server-side cookies or tokens. Returning users go directly to Sign In, submit credentials, and upon success they land back on `/dashboard`. Any unauthorized access to `/dashboard` redirects back to Sign In.
-
----
+On the Dashboard, a left-hand sidebar lists navigation links: **Profile**, **Media**, **Agencies**, and **Advertisers**. In **Profile**, users see their personal and company details with an **Edit** button opening a form for updates. In **Media**, they can add new display mediums via a form, view existing items in a paginated list, and edit or delete entries. **Agencies** and **Advertisers** follow similar CRUD patterns, each with its own list view and form. In **Profile**, a multi-select component lets members associate themselves with multiple media channels. All forms call the appropriate API routes, handle success/error messages, and update the UI in real time.
 
 ## 4. Core Features
-
-- **Sign-Up Page (`/app/sign-up/page.tsx`)**: Form fields for email & password, client-side validation, POST to `/api/auth`.
-- **Sign-In Page (`/app/sign-in/page.tsx`)**: Form fields for email & password, client-side validation, POST to `/api/auth`.
-- **Authentication API (`/app/api/auth/route.ts`)**: Handles both registration and login based on HTTP method, integrates password hashing (bcrypt) and session or JWT logic.
-- **Global Layout (`/app/layout.tsx` + `globals.css`)**: Shared header, footer, and CSS resets across all pages.
-- **Dashboard Layout (`/app/dashboard/layout.tsx` + `dashboard/theme.css`)**: Sidebar or top nav for authenticated flows, section-specific styling.
-- **Dashboard Page (`/app/dashboard/page.tsx`)**: Reads `data.json`, renders it as cards or tables.
-- **Static Data Source (`/app/dashboard/data.json`)**: Example dataset to demo dynamic rendering.
-- **TypeScript Configuration**: `tsconfig.json` with strict mode and path aliases (if any).
-
----
+- **Authentication Module**: JWT-based sign-up, sign-in, password hashing, session validation.  
+- **Member Profile Management**: View/edit personal and company fields.  
+- **Display Medium CRUD**: Create, list, edit, delete media entities.  
+- **Agency Management**: Full CRUD for agency records tied to members.  
+- **Advertiser Management**: CRUD operations for advertiser records linked to agencies.  
+- **Member–Media Association**: Multi-select UI + API to update join table.  
+- **API Routes**: RESTful endpoints under `app/api/`, each with GET/POST/PUT/DELETE.  
+- **UI Components**: Reusable form inputs, buttons, lists from Shadcn UI.  
+- **Type-Safe ORM**: Drizzle schemas for database models and relations.  
+- **Docker Setup**: Containers for Node.js app and PostgreSQL database.
 
 ## 5. Tech Stack & Tools
-
-- **Framework**: Next.js (App Router) for file-based routing, SSR/SSG, and API routes.
-- **Language**: TypeScript for type safety.
-- **UI Library**: React 18 for component-based UI.
-- **Styling**: Plain CSS via `globals.css` (global reset) and `theme.css` (sectional styling). Can easily migrate to CSS Modules or Tailwind in the future.
-- **Backend**: Node.js runtime provided by Next.js API routes.
-- **Password Hashing**: bcrypt (npm package).
-- **Session/JWT**: NextAuth.js or custom JWT logic (to be decided in implementation).
-- **IDE & Dev Tools**: VS Code with ESLint, Prettier extensions. Optionally, Cursor.ai for AI-assisted coding.
-
----
+- **Frontend**:  
+  • Next.js (React framework with App Router)  
+  • TypeScript (static typing)  
+  • Shadcn UI & Radix UI (accessible components)  
+  • Tailwind CSS (utility-first styling)  
+- **Backend**:  
+  • Next.js API Routes (node serverless functions)  
+  • Better Auth library + JWT (authentication)  
+  • Drizzle ORM (type-safe queries)  
+  • PostgreSQL (relational database)  
+- **Containerization**: Docker & Docker Compose  
+- **IDE Tools** (optional): Cursor or Windsurf for AI-assisted coding  
+- **Testing** (future): Jest for unit tests, Playwright/Cypress for E2E.
 
 ## 6. Non-Functional Requirements
-
-- **Performance**: Initial page load under 200 ms on a standard broadband connection. API responses under 300 ms.
-- **Security**:
-  - HTTPS only in production.
-  - Proper CORS, CSRF protection for API routes.
-  - Secure password storage (bcrypt with salt).
-  - No credentials or secrets checked into version control.
-- **Scalability**: Structure must support adding database integration, caching layers, and advanced auth flows without rewiring core app.
-- **Usability**: Forms should give real-time feedback on invalid input. Layout must be responsive (mobile > 320 px).
-- **Maintainability**: Code must adhere to TypeScript strict mode. Linting & formatting enforced by ESLint/Prettier.
-
----
+- **Performance**: Page load time < 2 seconds; API response < 200ms for standard queries.  
+- **Security**: All traffic over HTTPS; password hashing (bcrypt); JWT expiry; OWASP best practices.  
+- **Usability**: WCAG 2.1 AA accessibility; mobile and desktop responsive.  
+- **Data Integrity**: Enforce referential integrity in PostgreSQL; validate inputs server-side with Zod.  
+- **Maintainability**: ESLint & Prettier for code style; clear folder structure; comprehensive code comments.
 
 ## 7. Constraints & Assumptions
-
-- **No Database**: Dashboard uses only `data.json`; real database integration is deferred.
-- **Node Version**: Requires Node.js >= 14.
-- **Next.js Version**: Built on Next.js 13+ App Router.
-- **Authentication**: Assumes availability of bcrypt or NextAuth.js at implementation time.
-- **Hosting**: Targets serverless or Node.js-capable hosting (e.g., Vercel, Netlify).
-- **Browser Support**: Modern evergreen browsers; no IE11 support required.
-
----
+- Node.js >= v18 and Next.js >= v14 environment is available.  
+- PostgreSQL v14+ instance accessible via Docker or managed service.  
+- Drizzle ORM must support many-to-many relations via join tables.  
+- Users have modern browsers (Chrome, Edge, Firefox, Safari).  
+- No external legacy systems to integrate in v1.  
+- Future scale will remain within moderate traffic (< 10,000 daily active users).
 
 ## 8. Known Issues & Potential Pitfalls
-
-- **Static Data Limitation**: `data.json` is only for demo. A real API or database will be needed to avoid stale data.
-  *Mitigation*: Define a clear interface for data fetching so swapping to a live endpoint is trivial.
-
-- **Global CSS Conflicts**: Using global styles can lead to unintended overrides.
-  *Mitigation*: Plan to migrate to CSS Modules or utility-first CSS in Phase 2.
-
-- **API Route Ambiguity**: Single `/api/auth/route.ts` handling both sign-up and sign-in could get complex.
-  *Mitigation*: Clearly branch on HTTP method (`POST /register` vs. `POST /login`) or split into separate files.
-
-- **Lack of Testing**: No test suite means regressions can slip in.
-  *Mitigation*: Build a minimal Jest + React Testing Library setup in an early iteration.
-
-- **Error Handling Gaps**: Client and server must handle edge cases (network failures, malformed input).
-  *Mitigation*: Define a standard error response schema and show user-friendly messages.
+- **JWT Expiration & Refresh**: Short-lived tokens require refresh logic; consider refresh tokens.  
+- **API Rate Limits**: If publicly exposed, apply basic throttling or API key checks.  
+- **DB Schema Migrations**: Frequent schema changes can break migration scripts; adopt a migration tool (e.g., Drizzle migrate).  
+- **Timezone Handling**: Ensure date fields store and display in user’s local timezone.  
+- **Form Validation Gaps**: Missing or inconsistent client/server validation could allow bad data; enforce Zod schemas in API routes.  
+- **Container Networking**: Docker Compose may need port remapping adjustments on some OSes; document default ports.
 
 ---
 
-This PRD should serve as the single source of truth for the AI model or any developer generating the next set of technical documents: Tech Stack Doc, Frontend Guidelines, Backend Structure, App Flow, File Structure, and IDE Rules. It contains all functional and non-functional requirements with no ambiguity, enabling seamless downstream development.
+This PRD provides a clear, unambiguous blueprint for developing the AMOOH Membership and Company Registration Platform. Subsequent technical documents (Tech Stack Details, Frontend Guidelines, Backend Structure, App Flow, File Structure, IDE Rules) can reference these sections to ensure consistency and completeness.

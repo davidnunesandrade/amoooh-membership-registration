@@ -1,14 +1,19 @@
 flowchart TD
-  Start[Landing Page]
-  SignUpPage[Sign Up Page]
-  SignInPage[Sign In Page]
-  AuthAPI[Authentication API Endpoint]
-  DashboardPage[Dashboard Page]
-  Start -->|Select Sign Up| SignUpPage
-  Start -->|Select Sign In| SignInPage
-  SignUpPage -->|Submit Credentials| AuthAPI
-  SignInPage -->|Submit Credentials| AuthAPI
-  AuthAPI -->|Success| DashboardPage
-  AuthAPI -->|Error| SignUpPage
-  AuthAPI -->|Error| SignInPage
-  DashboardPage -->|Click Logout| Start
+    U[User] --> SU[Sign Up Page]
+    U --> SI[Sign In Page]
+    SU --> Auth[Auth API]
+    SI --> Auth
+    Auth --> AD{Auth Success}
+    AD -->|Yes| Dash[Dashboard]
+    AD -->|No| SI
+    Dash --> MM[Manage Media]
+    Dash --> MA[Manage Agencies]
+    Dash --> MD[Manage Advertisers]
+    MM --> MediaAPI[Media API]
+    MA --> AgencyAPI[Agencies API]
+    MD --> AdvertiserAPI[Advertisers API]
+    MediaAPI --> DB[PostgreSQL DB]
+    AgencyAPI --> DB
+    AdvertiserAPI --> DB
+    Dash --> LO[Log Out]
+    LO --> SI

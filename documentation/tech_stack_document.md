@@ -1,90 +1,107 @@
-# Tech Stack Document
+# Tech Stack Document for amoooh-membership-registration
 
-This document explains the key technologies chosen for the **codeguide-starter** project. It’s written in everyday language so anyone—technical or not—can understand why each tool was picked and how it supports the application.
+This document explains in simple terms the technologies powering the amoooh-membership-registration project. It shows how each choice contributes to a smooth user experience, reliable data handling, and an easy path for development and deployment.
 
-## 1. Frontend Technologies
-The frontend is everything the user sees and interacts with. For this project, we’ve used:
+## Frontend Technologies
 
-- **Next.js (App Router)**
-  - A React framework that makes page routing, server-side rendering, and API routes very simple.
-  - Enhances user experience by pre-rendering pages on the server or at build time, leading to faster initial load.
-- **React 18**
-  - The underlying library for building user interfaces with reusable components.
-  - Provides a smooth, interactive experience thanks to its virtual DOM and modern hooks.
+We chose tools that help us build a fast, responsive, and consistent user interface:
+
+- **Next.js (React Framework)**
+  - Gives us built-in routing, server-side rendering, and a simple way to define API endpoints alongside pages.
+  - Helps pages load quickly and stay SEO-friendly.
+
 - **TypeScript**
-  - A superset of JavaScript that adds types (labels for data).
-  - Helps catch errors early during development and makes the code easier to maintain.
-- **CSS (globals.css & theme.css)**
-  - **globals.css** applies base styles (fonts, colors, resets) across the entire app.
-  - **dashboard/theme.css** defines the look and feel specific to the dashboard area.
-  - This separation keeps styles organized and avoids accidental style conflicts.
+  - Adds type checking to JavaScript so mistakes are caught early.
+  - Improves code quality and makes it easier to navigate large codebases.
 
-By combining these tools, we have a clear structure (Next.js folders for pages and layouts), safer code (TypeScript), and flexible styling with vanilla CSS.
+- **Shadcn UI (built on Radix UI)**
+  - A ready-made library of accessible and customizable UI components (buttons, forms, dialogs, menus).
+  - Saves time by providing consistent building blocks for our forms and dashboards.
 
-## 2. Backend Technologies
-The backend handles data, user accounts, and the logic behind the scenes. Our choices here are:
+- **Tailwind CSS**
+  - A utility-first styling framework that lets us write CSS classes right in our markup.
+  - Speeds up design work and keeps styling consistent across the app.
+
+## Backend Technologies
+
+Our backend is designed to handle authentication, data storage, and business logic in a type-safe and maintainable way:
 
 - **Next.js API Routes**
-  - Allows us to write server-side code (`route.ts` files) alongside our frontend in the same project.
-  - Runs on Node.js, so we can handle requests like sign-up, sign-in, and data fetching in one place.
-- **Node.js Runtime**
-  - The JavaScript environment on the server that executes our API routes.
-- **bcrypt** (npm package)
-  - A library for hashing passwords securely before storing them.
-  - Ensures that even if someone got access to our data, raw passwords aren’t visible.
-- **(Optional) NextAuth.js or JWT**
-  - While this starter kit shows a custom authentication flow, it can easily integrate services like NextAuth.js for email-based login or JWT (JSON Web Tokens) for stateless sessions.
+  - Let us define server-side logic in the same project as our frontend.
+  - Simplifies development by avoiding a separate server setup.
 
-These components work together to receive user credentials, verify or store them securely, manage sessions or tokens, and deliver protected data back to the frontend.
+- **Better Auth Library**
+  - Handles the full login and signup flow, including session management and JWTs (JSON Web Tokens).
+  - Keeps user authentication code modular and easy to update.
 
-## 3. Infrastructure and Deployment
-Infrastructure covers where and how we host the app, as well as how changes get delivered:
+- **PostgreSQL**
+  - A reliable, open-source relational database for storing users, sessions, and custom entities (e.g., members, agencies, media).
+  - Scales with growing data and supports advanced queries.
+
+- **Drizzle ORM**
+  - A TypeScript-friendly library for writing database queries with full type safety.
+  - Helps us define and manage database schemas directly in code, reducing the chance of mismatches between code and database.
+
+- **Docker**
+  - Containers ensure everyone on the team runs the same development environment.
+  - Eases deployment by packaging the app and its dependencies together.
+
+## Infrastructure and Deployment
+
+We set up our infrastructure to be reliable, reproducible, and ready for continuous delivery:
 
 - **Git & GitHub**
-  - Version control system (Git) and remote hosting (GitHub) keep track of all code changes and allow team collaboration.
-- **Vercel (or Netlify)**
-  - A popular hosting service optimized for Next.js, with one-click deployments and global content delivery.
-  - Automatically rebuilds and deploys the site whenever code is pushed to the main branch.
-- **GitHub Actions (CI/CD)**
-  - Automates tasks like linting (ESLint), formatting (Prettier), and running any tests you add.
-  - Ensures that only clean, tested code goes live.
+  - Version control for tracking changes and collaborating through pull requests.
 
-Together, these tools provide a reliable, scalable setup where every code change is tested and deployed quickly, with minimal manual work.
+- **Docker Compose**
+  - Defines services for the application and database, allowing one-command startup in development or staging.
 
-## 4. Third-Party Integrations
-While this starter kit is minimal by design, it already includes or can easily add:
+- **CI/CD Pipelines (e.g., GitHub Actions)**
+  - Automate steps like building the code, running tests, and deploying to production or staging.
+  - Ensures every change goes through a consistent quality check before going live.
 
-- **bcrypt**
-  - For secure password hashing (included as an npm dependency).
-- **NextAuth.js** (optional)
-  - A full-featured authentication library supporting email/password, OAuth, and more.
-- **Sentry or LogRocket** (optional)
-  - For real-time error tracking and performance monitoring in production.
+- **Hosting Platforms**
+  - Can be deployed to cloud services that support Docker containers (such as AWS, DigitalOcean, or Vercel).
+  - Leverages container images for predictable runtime behavior.
 
-These integrations help extend the app’s capabilities without building every feature from scratch.
+## Third-Party Integrations
 
-## 5. Security and Performance Considerations
-We’ve baked in several measures to keep users safe and the app running smoothly:
+To speed up development and add extra features, we’ve integrated several well-known libraries:
 
-Security:
-- Passwords are never stored in plain text—bcrypt hashes them with a random salt.
-- API routes can implement CSRF protection and input validation to block malicious requests.
-- Session tokens or cookies are marked secure and HttpOnly to prevent theft via JavaScript.
+- **Shadcn UI (Radix UI)**  – For accessible UI components.
+- **Better Auth**             – For handling secure user login and sessions.
+- **Drizzle ORM**             – For type-safe database access.
+- **next-pwa** (optional)     – To add Progressive Web App features like offline support and “add to home screen.”
+- **TanStack Table**          – For building interactive data tables with sorting, filtering, and pagination.
+- **Recharts**                – For adding charts and data visualizations to reports.
 
-Performance:
-- Server-side rendering (SSR) and static site generation (SSG) in Next.js deliver pages faster.
-- Code splitting and lazy-loaded components ensure users only download what they need.
-- Global CSS and theme files are small and cached by the browser for quick repeat visits.
+## Security and Performance Considerations
 
-These strategies work together to give users a fast, secure experience every time.
+We’ve built in safeguards and optimizations to keep the app fast and secure:
 
-## 6. Conclusion and Overall Tech Stack Summary
-In building **codeguide-starter**, we chose technologies that:
+- **Authentication & Authorization**
+  - Uses JWT tokens and session cookies to protect API routes.
+  - Custom middleware checks that members can only update their own data.
 
-- Align with modern web standards (Next.js, React, TypeScript).
-- Provide a clear, file-based project structure for rapid onboarding.
-- Offer built-in support for server-side rendering, API routes, and static assets.
-- Emphasize security through password hashing, session management, and safe defaults.
-- Enable easy scaling and future enhancements via modular code and optional integrations.
+- **Type Safety & Input Validation**
+  - TypeScript and Drizzle ORM ensure data shapes match between frontend, backend, and database.
+  - We recommend adding a library like Zod for extra server-side input validation.
 
-This stack strikes a balance between simplicity for newcomers and flexibility for experienced teams. It accelerates development of a secure authentication flow and a polished dashboard, while leaving room to plug in databases, test suites, and advanced features as the project grows.
+- **Server-Side Rendering (SSR) & Caching**
+  - Next.js server components let us fetch data on the server for faster initial page loads.
+  - Response caching can be layered in (e.g., HTTP headers or Redis) to reduce repeated database hits.
+
+- **Performance Best Practices**
+  - Tailwind CSS and modular components keep style bundles small.
+  - Code splitting and lazy loading pages/components only when needed.
+
+## Conclusion and Overall Tech Stack Summary
+
+This project uses a modern, unified TypeScript stack that spans from the database to the user interface. By choosing Next.js, TypeScript, and Drizzle ORM, we get:
+
+- A single development language (TypeScript) for frontend, backend, and database schemas.
+- Built-in routing and server-side logic, removing the need for a separate API server.
+- Ready-made UI components and styling tools for a fast, consistent interface.
+- Secure, scalable data handling with PostgreSQL, JWT auth, and containerized deployment.
+
+All these elements work together to provide a strong foundation for the AMOOH membership and company registration platform. Whether you’re extending the member profile, adding media management, or building out advanced dashboards, this stack ensures you have a clear, maintainable, and performant codebase to build on.
